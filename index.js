@@ -42,6 +42,18 @@ app.listen(PORT,() => {
     console.log(`Server is running at http://localhost:${PORT}`);
 });
 
+//Route to display all tasks
+app.get('/', async (req, res) => {
+    try {
+        const allTasks = await itemsPool.query('SELECT * FROM tasks ORDER BY id DESC');
+        res.render('tasks', { tasks: allTasks.rows });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error.message);
+    }
+});
+
+//Route to add a new task
 app.post('/tasks', async(req, res) => {
     try{
         const newTask = await itemsPool.query(
@@ -55,6 +67,7 @@ app.post('/tasks', async(req, res) => {
     }
 });
 
+//Route to delete a task by ID
 app.post('/tasks/:id', async (req, res) => {
     try {
         const id = req.params.id;
